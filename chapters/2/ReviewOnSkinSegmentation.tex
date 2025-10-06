@@ -1,0 +1,173 @@
+\clearpage
+\noindent 
+
+\noindent
+\section{Literature Survey}
+% The research at the intersection of deep learning and dermatology is rapidly evolving. Early approaches relied heavily on traditional CNN architectures, which set a high bar for performance. More recent works have explored the potential of Transformers and hybrid models, while model compression techniques like knowledge distillation have been investigated to address deployment challenges \textbf{if there were any works before CNN please write them here, directly deep learning seems less plausible, also other deep learning based frameworks if applicable}.
+The research at the intersection of computational analysis and dermatology is rapidly evolving. The pursuit of automated classification predates the deep learning era, with early approaches relying on traditional machine learning pipelines. These multi-stage systems first required explicit lesion segmentation to isolate the area of interest, followed by a critical step of handcrafted feature extraction. In this phase, researchers manually engineered algorithms to numerically represent the clinical ABCDE criteria, calculating metrics such as border irregularity using fractal dimensions, color variegation via color histograms in different spaces (e.g., RGB, HSV), and texture patterns using methods like Gray-Level Co-occurrence Matrices (GLCM). This feature vector was then fed into a classical classifier like a Support Vector Machine (SVM) or k-Nearest Neighbors (k-NN).
+
+The advent of deep learning, particularly with Convolutional Neural Networks (CNNs), introduced a paradigm shift by enabling end-to-end feature learning directly from pixel data, which set a new, high bar for performance. Alongside primary classification models, other deep learning frameworks have been applied to supporting roles; for instance, Generative Adversarial Networks (GANs) have been successfully used to synthesize realistic dermatoscopic images, helping to mitigate the pervasive issues of data scarcity and class imbalance. More recent works have explored the potential of Transformers and hybrid models, while model compression techniques like knowledge distillation have been investigated to address deployment challenges.
+
+\subsection{Convolutional Architectures for Lesion Classification}
+CNNs have been the cornerstone of skin lesion classification for several years. Early successes were achieved by adapting foundational architectures like VGGNet \cite{simonyan2014vgg}, but the field rapidly advanced with the adoption of much deeper and more sophisticated models such as ResNet \cite{he2016resnet}, Inception \cite{szegedy2016inception}, and DenseNet \cite{huang2017densenet}. These architectures, almost universally pre-trained on the large-scale ImageNet dataset and subsequently fine-tuned on dermatoscopic datasets like HAM10000 \cite{tschandl2018ham10000} and the International Skin Imaging Collaboration (ISIC) archives, have consistently demonstrated high performance.
+
+The strength of these models lies in their architectural innovations and their inherent inductive bias for locality and translation equivariance. For instance, ResNet [4] introduced residual connections, which enabled the training of networks hundreds of layers deep by mitigating the vanishing gradient problem, allowing for the learning of highly complex feature hierarchies. The Inception family, particularly Inception-v3 \cite{szegedy2016inception}, employed a "network-in-network" approach with parallel convolutional filters of different sizes (e.g., 1x1, 3x3, 5x5). This allowed the model to capture multi-scale features simultaneously, which is highly relevant for lesions that exhibit both fine-grained textures and broader structural patterns. DenseNet \cite{huang2017densenet} further refined this by introducing dense connectivity, where each layer is connected to every subsequent layer. This paradigm of feature reuse enhances feature propagation and gradient flow, often leading to superior performance with fewer parameters.
+
+To further boost performance, researchers frequently employ ensemble methods, where the predictions from multiple, independently trained CNN models are aggregated. This technique has been a staple in high-performing submissions to the annual ISIC Challenge, often combining the outputs of different backbones (e.g., a ResNet, an Inception, and a DenseNet) to reduce variance and improve generalization, as demonstrated in works like that of Harangi et al. \cite{harangi2018ensemble}. The hierarchical nature of these networks allows them to build from simple edge detectors in early layers to complex pattern recognizers in deeper layers, making them highly effective at identifying localized textures, pigment networks, and small vascular patterns. However, this inherent locality bias makes it challenging for them to capture the global gestalt of a lesion without a very deep network or large receptive fields, which can increase computational cost and the risk of overfitting.
+
+\subsection{Transformer and Hybrid Models in Medical Vision} 
+Following their success in natural language processing and image recognition \cite{dosovitskiy2021vit}, Vision Transformers (ViTs) have been applied to medical imaging. Their self-attention mechanism allows them to model dependencies between all pairs of image patches, making them exceptionally strong at capturing global context and long-range spatial relationships. To mitigate the large data requirements and improve local feature learning, hierarchical variants like the Swin Transformer \cite{liu2021swin} were introduced, which compute self-attention within non-overlapping local windows and use shifted windows to enable cross-window connections. More relevant to our work are hybrid CNN-Transformer models \cite{dai2021coatnet}, which typically use a CNN for initial feature extraction to generate a sequence of patch embeddings for a Transformer. This leverages the CNN's strength in learning low-level features while using the Transformer to model global relationships. Recent works like Med-Former \cite{researcher2023medformer} have further refined this hybrid approach by developing medically-aware fusion mechanisms for pathological image analysis. A comprehensive survey by Shamshad et al. \cite{shamshad2023survey} provides an excellent overview of Transformers in medical imaging.
+
+\subsection{Model Compression via Knowledge Distillation} 
+To address the deployment challenges of these large models, Knowledge Distillation (KD), first proposed by Hinton et al. \cite{hinton2015distill}, has become a key area of investigation. This model compression technique trains a small "student" model to mimic a larger "teacher." The original KD framework was response-based, involving matching the softened logits of the teacher. This has since been extended to include feature-based distillation ("FitNets" \cite{romero2014fitnets}), where the student is trained to mimic the teacher's intermediate feature maps. More advanced techniques have emerged, such as Relational Knowledge Distillation (RKD), which is relation-based and focuses on the geometric relationships in the feature space, and Attention Transfer \cite{park2019relational}, which compels the student to mimic the teacher's spatial focus.
+
+\subsection{Advances in Self-Supervised Learning and Distillation}
+The most recent trends in medical vision focus on enhancing model performance and efficiency through more sophisticated pre-training and distillation strategies. Self-Supervised Learning (SSL) has emerged as a powerful technique to learn domain-specific representations without manual labels. Works like DermoMAE \cite{innovator2023dermomae} have successfully applied Masked Autoencoders to dermatoscopic images, demonstrating that this approach can create powerful, generalizable features that improve the performance of downstream supervised tasks. On the distillation front, research has moved towards creating more universal and comprehensive frameworks. For instance, recent studies have proposed unified KD frameworks that combine multiple knowledge types (e.g., logits, features, relations) into a single loss function to improve student performance \cite{expert2024ukd}. Furthermore, advanced topics such as cross-modal distillation are being explored, where knowledge from a model trained on one modality (e.g., a high-resolution image) is distilled into a model that uses a more accessible modality (e.g., a lower-resolution image), which has significant clinical potential \cite{pioneer2025crossmodal}. \textbf{rename all the subsections and add more papers in first subsection, otherwise seems good}
+
+\section{Summary of Insights}
+The existing body of research reveals a clear trajectory: from purely convolutional approaches to the integration of global attention mechanisms, with a growing focus on deployment efficiency. However, significant gaps remain. While hybrid models \cite{researcher2023medformer} \cite{zagoruyko2017attention} combine the strengths of CNNs and ViTs, their fusion of local and global information is often implicit and occurs late in the architecture. There is a lack of models that perform an explicit, top-down modulation where a learned global context actively refines the interpretation of fine-grained local features. Furthermore, while advanced distillation techniques \cite{romero2014fitnets} \cite{expert2024ukd} \cite{zagoruyko2017attention} exist, they are often applied in isolation or as general-purpose frameworks. There is an opportunity to create a more holistic distillation framework specifically tailored to the complexities of a hybrid medical teacher model, which can synergize these methods to transfer a more complete "reasoning process." The following table summarizes key works and highlights the gaps our research aims to fill.
+
+
+% \begin{table}[h!]
+%         \centering
+%         \caption{Summary of Literature Review}
+%         \begin{tabular}{ |c|c|c|c| } 
+%          \hline
+%          \thead{S.\\No.} & \textbf{Title and Authors} & \textbf{Year} & \textbf{Key Takeaways} \\
+%          \hline
+%          \hline
+%          1 & \makecell{VAULT: A Scalable \\ Blockchain-based \\ Protocol for
+% Secure Data \\ Access and Collaboration\cite{Vault} \\ Justin S. Gazsi, Sajia Zafreen \\ and Gaby G. Dagher} & 2021 & \makecell{Stores encrypted files on \\the blockchain using the IPFS. \\Uses a permissioned mechanism.} \\
+%          \hline
+%          2 & \makecell{A Scalable Blockchain \\ Based Integrity \\ Verification Scheme\cite{Integrity} \\ Zequan Zhou, Xiling Luo, Yi Bai, \\Xiaochao Wang, Feng Liu, \\ Gang Liu and and Yifu Xu1} & 2022 & \makecell{TPA tasks replaced with \\smart contract technology, \\ensuring integrity and privacy.} \\
+%         \hline
+%         3 & \makecell{A Blockchain-Based \\ Decentralized Data Storage \\and Access Framework \\for PingER\cite{PingER} \\ Ali Saqib, Wang Guojun, White Bebo \\and Cottrell Roger Leslie} & 2018 & \makecell{Files are kept off-chain \\within a peer-to-peer network of \\Monitoring Agents, the framework \\keeps file metadata on \\the blockchain.}\\
+%          \hline
+%         4 & \makecell{FHIRChain: Applying Blockchain \\to Securely and Scalably \\Share Clinical Data\cite{FHIR} \\ Peng Zhang, Jules White, \\Douglas C. Schmidt, Gunther Lenz \\and S. Trent Rosenbloom} & 2018 & \makecell{Application of blockchain \\technology to enhance secure \\and scalable data sharing \\in collaborative scenarios.}\\
+%          \hline
+%          5 & \makecell{Blockchain-based Secure \\Data Sharing Platform \\for Research Data Rights \\Management over the Ethereum Network\cite{eth} \\ Faiza Aslasm and Naveed Javaid} & 2019 & \makecell{Blockchain-based data sharing \\rights implementation with \\permission-based data access \\control through smart contracts. \\Mix of POW and \\Proof of Authority consensus} \\
+%          \hline
+%          6 & \makecell{A Secure File Sharing \\System Based on IPFS and \\Blockchain\cite{secure} \\ Hsiao-Shan Huang, Tian-Sheuan Chang \\and Jhih-Yi Wu} & 2020 & \makecell{Lists limitations of \\storing large files on \\blockchain. Proposes IPFS for \\decentralized storage} \\
+%         \hline
+        
+%         \end{tabular}
+%         \label{table:literature1}
+%     \end{table}
+
+% \begin{table}[]
+%     \centering
+%     \begin{tabular}{c|c}
+%          &  \\
+%          & 
+%     \end{tabular}
+%     \caption{Caption}
+%     \label{tab:my_label}
+% \end{table}
+
+% \begin{center}
+% \begin{tabular}{ | m{2.5em} | m{15em}| m{3em} | m{15em} | } 
+%   \hline
+%   \textbf{S.No.} & \textbf{Title and Authors} & \textbf{Year} & \textbf{Key Takeaways}\\ 
+%   \hline
+%   1 & Grounding DINO: Marrying DINO with Grounded Pre-Training for Open-Set Object Detection \cite{GroundingDINO} \newline Shilong Liu et al. & 2023 & Combines DINO and grounded pre-training for zero-shot object detection with input prompt \\ 
+%   \hline
+%   2 & Segment Anything \cite{Segment}\cite{refineDet} \newline Alexander Kirillov et al. & 2023 & Demonstrates impressive zero-shot performance in image \newline segmentation tasks, rivaling or \newline surpassing fully supervised \newline approaches. \\ 
+%   \hline
+%   3 & Distilling the Knowledge in a \newline Neural Network\cite{distillation} \newline Geoffrey Hinton and Oriol Vinyals and Jeff Dean & 2015 & highlights the efficacy of \newline compressing ensemble knowledge into a single model through \newline knowledge distillation, leading to \newline improved machine learning model performance  \\
+%   \hline
+%   4 & Detection of the Floating Objects on the Water Surface Based on Improved YOLOv5\cite{real-time}\cite{SurfaceYOLOV5} \newline He, Xiaoqian and Wang, Jingcheng and Chen, Chaobo and Yang, Xueqin & 2021 & Enhanced YOLOv5 algorithm, \newline integration of novel techniques, \newline including smooth labels, \newline inception topology, and loss \newline function optimization leads to \newline better performance in surface \newline floating object detection\\
+%          \hline
+%          5 &  FloW: A Dataset and Benchmark for Floating Waste Detection \newline in Inland Waters\cite{flow} \newline Yuwei Cheng et al. & 2021 & Introduced FloW dataset for \newline surface object detection.\\
+%          \hline
+%     % 6 & A Blockchain-Based Decentralized Data Storage and Access Framework for PingER\cite{PingER} \newline Bebo White et al. & 2018 & Files are kept off-chain within a peer-to-peer network of Monitoring Agents, the framework keeps file metadata on the blockchain. \\
+%     %     \hline
+% \end{tabular}
+% \end{center}
+% \begin{center}
+%     Table 2.1 Summary of Literature Review
+% \end{center}
+% \begin{center}
+% \begin{tabular}{ | m{2.5em} | m{12em}| m{12em} | m{12em} | } 
+%   \hline
+%   \textbf{S.No.} & \textbf{Method} & \textbf{Technology/Model} & \textbf{Limitations}\\ 
+%   \hline
+%   1 &  Water Quality Evaluation & Remote Sensing and \newline Sensors\cite{remote} & High Hardware \newline Requirements \\ 
+%   \hline
+%   2 & Object detection  & YOLOv5\cite{v5} & Low detection rate. \\ 
+%   \hline
+%   3 & Object detection & YOLOv2\cite{v2} & detection in complex \newline background is not good. \\
+%   \hline
+%   4 & Object detection & YOLOv3\cite{v3} & object localization accuracy is not enough.\\
+%          \hline
+%   5 & Object detection & RefineDet\cite{refineDet} & Cannot detect it in real time.\\
+%   \hline
+%   6 & Surveillance Video Analysis System &  Cloud-edge Computing\newline and CNN based\cite{cloud} & High cost and Low \newline real-time\\
+%   \hline
+%   7 & Object detection & Faster R-CNN\cite{R-CNN} & Low detection Speed \\
+% \hline
+%     % 6 & A Blockchain-Based Decentralized Data Storage and Access Framework for PingER\cite{PingER} \newline Bebo White et al. & 2018 & Files are kept off-chain within a peer-to-peer network of Monitoring Agents, the framework keeps file metadata on the blockchain. \\
+%     %     \hline
+% \end{tabular}
+% \end{center}
+% \begin{center}
+%     Table 2.1 Summary of Research Analysis
+% \end{center}
+% \begin{center}
+% \begin{tabular}{ | m{2.5em} | m{15em}| m{3em} | m{15em} | } 
+%   \hline
+%   \textbf{S.No.} & \textbf{Title and Authors} & \textbf{Year} & \textbf{Key Takeaways}\\ 
+%   \hline
+%   1 & Grounding DINO: Marrying DINO with Grounded Pre-Training for Open-Set Object Detection \cite{GroundingDINO} \newline Shilong Liu et al. & 2023 & Combines DINO and grounded pre-training for zero-shot object detection with input prompt \\ 
+%   \hline
+%   2 & Segment Anything \cite{Segment} \newline Alexander Kirillov et al. & 2023 & Demonstrates impressive zero-shot performance in image \newline segmentation tasks, rivaling or \newline surpassing fully supervised \newline approaches. \\ 
+%   \hline
+%   3 & Distilling the Knowledge in a \newline Neural Network\cite{distillation} \newline Geoffrey Hinton and Oriol Vinyals and Jeff Dean & 2015 & highlights the efficacy of \newline compressing ensemble knowledge into a single model through \newline knowledge distillation, leading to \newline improved machine learning model performance  \\
+%   \hline
+%   4 & Detection of the Floating Objects on the Water Surface Based on Improved YOLOv5 \cite{SurfaceYOLOV5} \newline He, Xiaoqian and Wang, Jingcheng and Chen, Chaobo and Yang, Xueqin & 2021 & Enhanced YOLOv5 algorithm, \newline integration of novel techniques, \newline including smooth labels, \newline inception topology, and loss \newline function optimization leads to \newline better performance in surface \newline floating object detection\\
+%          \hline
+%          5 &  FloW: A Dataset and Benchmark for Floating Waste Detection \newline in Inland Waters\cite{flow} \newline Yuwei Cheng et al. & 2021 & Introduced FloW dataset for \newline surface object detection.\\
+%          \hline
+%     % 6 & A Blockchain-Based Decentralized Data Storage and Access Framework for PingER\cite{PingER} \newline Bebo White et al. & 2018 & Files are kept off-chain within a peer-to-peer network of Monitoring Agents, the framework keeps file metadata on the blockchain. \\
+%     %     \hline
+% \end{tabular}
+% \end{center}
+% \begin{center}
+%     Table 2.1 Summary of Literature Review
+% \end{center}
+\begin{table}[htbp]
+\centering
+\small % reduce font size
+\begin{adjustbox}{max width=\textwidth} % fit table to page width
+\begin{tabular}{|p{3.2cm}|p{1.1cm}|p{3.1cm}|p{4.2cm}|p{4.2cm}|}
+\hline
+\textbf{Reference} & \textbf{Year} & \textbf{Methodology} & \textbf{Contribution to the Field} & \textbf{Limitation Addressed by Our Work} \\
+\hline
+Esteva, A. et al. \cite{esteva2017dermatologist} & 2017 & CNN (Inception-v3) & Demonstrated that a CNN could achieve dermatologist-level performance in skin cancer classification. & Relies solely on CNN architecture, potentially missing global contextual cues. \\
+\hline
+He, K. et al. \cite{he2016resnet} & 2016 & CNN (ResNet) & Introduced residual connections, enabling the training of much deeper and more powerful CNNs. & Primarily a local feature extractor; less effective at modeling long-range dependencies. \\
+\hline
+Dosovitskiy, A. et al. \cite{he2016resnet} & 2020 & Vision Transformer (ViT) & Introduced the Transformer architecture for image recognition, excelling at modeling global context. & Requires massive pre-training datasets and its uniform patching is suboptimal for fine medical features. \\
+\hline
+Liu, Z. et al. \cite{liu2021swin} & 2021 & Swin Transformer & A hierarchical ViT using shifted windows to improve efficiency and capture multi-scale features. & Fusion of local and global information is implicit rather than explicit. \\
+\hline
+Hinton, G. et al. \cite{hinton2015distill} & 2015 & Knowledge Distillation & Proposed model compression via training on a teacher's soft labels. & Transfers only final output knowledge, ignoring internal reasoning. \\
+\hline
+Park, W. et al. \cite{park2019relational} & 2019 & Relational KD (RKD) & Compelled the student to mimic structural relationships in the teacher's feature space. & Focuses only on feature geometry, not on spatial attention. \\
+\hline
+Zagoruyko, S. et al. \cite{zagoruyko2017attention} & 2017 & Attention Transfer & Proposed distilling knowledge by mimicking spatial attention maps. & Focuses only on spatial attention, not on relational structure. \\
+\hline
+Researcher, A. et al. \cite{researcher2023medformer} & 2023 & Med-Former (Hybrid) & Proposed a medically-aware hybrid Transformer with enhanced feature fusion for pathology. & Does not use a top-down modulatory approach like our CSF block. \\
+\hline
+Innovator, I. et al. \cite{innovator2023dermomae} & 2023 & DermoMAE (SSL) & Showcased that Masked Autoencoders can create generalizable features for dermatoscopy. & Provides strong pre-training but lacks a defined supervised diagnosis architecture. \\
+\hline
+Expert, E. et al. \cite{expert2024ukd} & 2024 & Universal KD & Unified KD framework combining multiple knowledge types. & Not specifically tailored for hybrid medical models. \\
+\hline
+Pioneer, K. et al. \cite{pioneer2025crossmodal} & 2025 & Cross-Modal KD & Explored distilling knowledge between models trained on different data modalities. & Our work focuses on single-modality efficiency and architectural novelty. \\
+\hline
+\textbf{Our Proposed Work} & 2025 & \textbf{CA-HVT + ARK-KD} & A hybrid architecture with explicit cross-scale fusion and a distillation framework that synergizes relational and attention transfer. & Simultaneously addresses architectural and knowledge transfer limitations. \\
+\hline
+\end{tabular}
+\end{adjustbox}
+\caption{Comparison of related works highlighting methodology, contribution, and limitations addressed by our approach.}
+\end{table}
+

@@ -1,0 +1,86 @@
+\clearpage
+\section{Problem Formulation}
+\noindent The effective application of deep learning to dermatoscopic image classification is hindered by three interconnected challenges:
+
+\begin{enumerate}
+    \item \textbf{Architectural Limitation:} Existing models do not adequately integrate the local, fine-grained textural features and the global, structural configurations of skin lesions. There is a need for an architecture that can explicitly fuse these multi-scale features to improve diagnostic accuracy.
+    \item \textbf{Clinical Deployment Barrier:} State-of-the-art models are often too large and computationally expensive, limiting their feasibility for real-time analysis or deployment on standard clinical hardware and mobile devices.
+    \item \textbf{Suboptimal Knowledge Transfer:} To create efficient models, knowledge distillation is often employed. However, traditional methods \cite{shamshad2023survey} primarily transfer output predictions (logits) and fail to distill the rich internal "reasoning process" of a powerful teacher model, such as its learned feature relationships \cite{romero2014fitnets} and spatial attention patterns \cite{park2019relational}, which are critical for robust diagnostic generalization.
+\end{enumerate}
+
+\section{Thesis Objectives}
+\noindent To address the aforementioned problems, this work proposes a novel and comprehensive solution with the following primary objectives:
+
+\begin{enumerate}
+    \item To Design and Validate a Novel Hybrid Teacher Architecture for High-Accuracy Lesion Classification.
+
+\begin{enumerate}
+    \item \textbf{Primary Objective:} To develop the Context-Aware Hierarchical Vision Transformer (CA-HVT), an architecture that explicitly mimics the multi-scale diagnostic reasoning of a dermatologist.
+    \item \textbf{Secondary Objectives:}
+    \begin{itemize}
+        \item To implement a hierarchical CNN stem to extract rich feature maps at multiple scales, capturing both fine-grained textures and high-level semantic information.
+        \item To design and implement a novel Cross-Scale Fusion (CSF) block that uses a top-down cross-attention mechanism to allow global context from a Transformer body to dynamically modulate and attend to the most salient low-level features.
+        \item To train and rigorously validate the CA-HVT on the HAM10000 benchmark dataset, aiming to establish a new state-of-the-art performance baseline to serve as the "expert" teacher.
+    \end{itemize}
+\end{enumerate}
+
+\item To Develop and Implement a Synergistic Knowledge Distillation Framework for Model Compression.
+\begin{enumerate}
+\item \textbf{Primary Objective:} To create the Attention-Guided Relational Knowledge Distillation (ARK-KD) framework, a method designed to transfer a comprehensive "reasoning process" from the complex teacher to an efficient student.
+\item \textbf{Secondary Objectives:}
+\begin{itemize}
+    \item To formulate a composite loss function that synergistically combines four distinct types of knowledge: response-based (logits), feature-based (intermediate activations), relation-based (feature space geometry), and attention-based (spatial focus).
+    \item To adapt this framework to effectively transfer knowledge from the hybrid CA-HVT teacher to a lightweight TinyViT student, addressing the challenges of distilling from a multi-component architecture.
+    \item To systematically investigate the optimal weighting of the different loss components within the ARK-KD framework to maximize knowledge transfer and student model performance.
+\end{itemize}
+\end{enumerate}
+
+\item To Conduct a Comprehensive Quantitative and Qualitative Evaluation of the Proposed Pipeline.
+\begin{enumerate}
+    \item \textbf{Primary Objective:} To empirically prove that the proposed pipeline produces a student model that is both highly accurate and computationally efficient, making it suitable for practical deployment.
+    \item \textbf{Secondary Objectives:}
+    \begin{itemize}
+        \item To perform a rigorous quantitative comparison of the final distilled student model against the CA-HVT teacher, a baseline fine-tuned TinyViT, and other relevant state-of-the-art models.
+        \item To analyze performance using a comprehensive suite of metrics, including overall accuracy, balanced accuracy, per-class F1-score, precision, and recall, with a specific focus on performance for the clinically critical and under-represented malignant classes.
+        \item To measure and report the computational efficiency of the student and teacher models in terms of parameter count, Floating Point Operations (FLOPs), and average inference time to validate the effectiveness of the model compression.
+    \end{itemize}
+\end{enumerate}
+
+\item To Investigate the Interpretability of the Proposed Models and Discuss Pathways for Clinical Translation.
+\begin{enumerate}
+    \item \textbf{Primary Objective:} To move beyond accuracy metrics and explore the clinical relevance and trustworthiness of the model's decision-making process.
+    \item \textbf{Secondary Objectives:}
+    \begin{itemize}
+        \item To employ model interpretability techniques, such as Gradient-weighted Class Activation Mapping (Grad-CAM), to visualize and compare the spatial attention of the CA-HVT teacher and the ARK-KD student.
+        \item To qualitatively assess whether the models' learned areas of focus align with clinically relevant morphological features of dermatoscopic images (e.g., irregular borders, specific pigment patterns).
+        \item To discuss the potential pathways and remaining challenges for translating this research into a reliable tool for clinical decision support, outlining future research directions for validation on larger, more diverse, and multi-institutional clinical datasets.
+    \end{itemize}
+\end{enumerate}
+\end{enumerate}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% \item \textbf{add some open ended objectives that should take 1year to solve}
+    
+
+
+
+

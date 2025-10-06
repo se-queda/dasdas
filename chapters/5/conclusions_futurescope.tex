@@ -1,0 +1,15 @@
+\clearpage
+\noindent This chapter details the project's conclusion and the thesis's future scope.
+
+\section{Conclusions}
+\noindent In this study, we examined the vital challenge of surface floating object detection using the FloW dataset and novel object detection models, particularly GroundedSAM and YOLOv8. In order to automatically annotate images and produce a dataset for training the target model, we made use of the capability of knowledge distillation. We achieved precise and quick floating waste detection by combining the capabilities of GroundedSAM's automatic annotating and YOLOv8's effective real-time detection.
+Results showed that our method identified and classified floating waste objects in challenging conditions, including those involving reflections and too much light. The distilled model, developed by transferring knowledge from GroundedSAM to YOLOv8, demonstrated impressive performance, showcasing its potential as a potent tool for practical applications like pollution monitoring, environmental conservation, and search and rescue.
+
+\section{Future Scope}
+\noindent A complete analysis of previous methods and approaches used for image description generation has been done in the literature review process.
+\begin{enumerate}
+    \item Training the final model on the more diverse dataset and leveraging the power of prompt engineering to improve the performance of the model.
+    \item Try out various hyperparameter configurations for GroundedSAM and YOLOv8. Various factors, including learning rates, batch sizes, optimizer selections, and regularisation methods.
+    \item Find the ideal parameters for efficiently transferring knowledge from GroundedSAM to YOLOv8, extending hyperparameter adjustment to the knowledge distillation procedure.
+    \textbf{dont add as bullets, rewrite as whole paragraph and write this in detail}
+\end{enumerate}
